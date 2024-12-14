@@ -7,13 +7,17 @@ exports.signup = (req,res,next) =>{
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        if(errors.array()[0].path == 'email'){
-            return res.status(409).json({ status: 409,data: null, message: errors.array()[0].msg, error: null });
+        if (errors.array()[0].msg == "E-mail already exists.") {
+          return res.status(409).json({ status: 409, data: null, message: errors.array()[0].msg, error: null });
+        } else {
+          let reason = "";
+          errors.array().map((e) => {
+            reason += e.msg;
+            reason += ", ";
+          });
+          return res.status(400).json({ status: 400, data: null, message: `Bad Request, Reason: ${reason} `, error: null });
         }
-        if(errors.array()[0].path == 'password'){
-            return res.status(400).json({ status: 400,data: null, message: "Bad Request, Reason: Password is missing", error: null });
-        }
-    }
+      }
     const email = req.body.email;
     const password = req.body.password;
     const role = "admin";

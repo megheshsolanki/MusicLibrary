@@ -20,9 +20,9 @@ router.post(
             return Promise.reject("E-mail already exists!");
           }
         });
-      })
+      }).notEmpty().withMessage("Email is missing")
       .normalizeEmail(),
-     body("password").notEmpty()
+     body("password").notEmpty().withMessage("Password is missing")
   ],
   authController.signup
 );
