@@ -15,6 +15,13 @@ const userSchema = new Schema({
         type: String,
         enum: ['admin','editor', 'viewer'],
         required: true
+    },
+    admin_id:{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: function(){
+            return this.role != "admin"
+        }
     }
 });
 
