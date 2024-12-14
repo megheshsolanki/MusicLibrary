@@ -1,0 +1,134 @@
+const { validationResult } = require("express-validator");
+const Artist = require("../models/artist");
+
+exports.getArtists = (req, res, next) => {
+  const adminId = req.query.admin_id; // fetch admin id from token
+  const grammy = parseInt(req.query.grammy) || 0;
+  const hidden = req.query.hidden || false;
+  const limit = req.query.limit || 5;
+  const offset = req.query.offset || 0;
+
+  const filters = {
+    admin_id: adminId,
+    grammy: { $gte: grammy },
+    hidden: hidden,
+  };
+  Artist.find(filters)
+    .limit(limit)
+    .skip(offset)
+    .then((artists) => {
+      return res.status(200).json({ status: 200, data: artists, message: "Artists retrieved successfully.", error: null });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.addArtist = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    let reason = "";
+    errors.array().map((e) => {
+      reason += e.msg;
+      reason += ", ";
+    });
+    return res.status(400).json({ status: 400, data: null, message: `Bad Request, Reason: ${reason} `, error: null });
+  }
+
+  const adminId = req.query.admin_id; // fetch admin id from token
+  // role-check
+  const name = req.body.name;
+  const grammy = req.body.grammy;
+  const hidden = req.body.hidden;
+
+  const newArtist = new Artist({
+    admin_id: adminId,
+    name: name,
+    grammy: grammy,
+    hidden: hidden,
+  });
+
+  newArtist
+    .save()
+    .then((result) => {
+      return res.status(201).json({ status: 201, data: null, message: "Artists created successfully.", error: null });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.getArtist = (req, res, next) => {
+  const adminId = req.query.admin_id; // fetch admin id from token
+  const artistId = req.params.id;
+
+  Artist.findById(artistId)
+    .then((artist) => {
+      if (!artist) {
+        return res.status(404).json({ status: 404, data: null, message: "Artist not found.", error: null });
+      }
+      if (adminId !== artist.admin_id.toString()) {
+        return res.status(403).json({ status: 403, data: null, message: "Forbidden Access /Operation not allowed.", error: null });
+      }
+      return res.status(200).json({ status: 200, data: artist, message: "Artist retrieved successfully.", error: null });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.updateArtist = (req, res, next) => {
+  const adminId = req.query.admin_id; // fetch admin id from token
+  const artistId = req.params.id;
+  const name = req.body.name;
+  const grammy = req.body.grammy;
+  const hidden = req.body.hidden;
+
+  // role check
+  Artist.findById(artistId)
+    .then((artist) => {
+      if (!artist) {
+        return res.status(404).json({ status: 404, data: null, message: "Artist not found.", error: null });
+      }
+      if (adminId !== artist.admin_id.toString()) {
+        return res.status(403).json({ status: 403, data: null, message: "Forbidden Access /Operation not allowed.", error: null });
+      }
+      
+      Artist.findByIdAndUpdate(artistId, {name,grammy,hidden})
+        .then((result) => {
+          return res.status(204).json({ status: 204, data: null, message: "Artist updated successfully.", error: null });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.deleteArtist = (req, res, next) => {
+  const adminId = req.query.admin_id; // fetch admin id from token
+  const artistId = req.params.id;
+  // role check
+
+  Artist.findById(artistId)
+    .then((artist) => {
+      if (!artist) {
+        return res.status(404).json({ status: 404, data: null, message: "Artist not found.", error: null });
+      }
+      if (adminId !== artist.admin_id.toString()) {
+        return res.status(403).json({ status: 403, data: null, message: "Forbidden Access /Operation not allowed.", error: null });
+      }
+      Artist.findByIdAndDelete(artistId)
+        .then((result) => {
+          return res.status(200).json({ status: 200, data: null, message: "Artist deleted successfully.", error: null });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
