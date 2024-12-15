@@ -3,16 +3,20 @@ const Artist = require("../models/artist");
 
 exports.getArtists = (req, res, next) => {
   const adminId = req.query.admin_id; // fetch admin id from token
-  const grammy = parseInt(req.query.grammy) || 0;
-  const hidden = req.query.hidden || false;
+  const grammy = parseInt(req.query.grammy) ;
+  const hidden = req.query.hidden;
   const limit = req.query.limit || 5;
   const offset = req.query.offset || 0;
 
   const filters = {
     admin_id: adminId,
-    grammy: { $gte: grammy },
-    hidden: hidden,
   };
+  if(grammy){
+    filters.grammy = { $gte: grammy }
+  }
+  if(hidden){
+    filters.hidden = hidden
+  }
   Artist.find(filters)
     .limit(limit)
     .skip(offset)
@@ -122,7 +126,7 @@ exports.deleteArtist = (req, res, next) => {
       }
       Artist.findByIdAndDelete(artistId)
         .then((result) => {
-          return res.status(200).json({ status: 200, data: null, message: "Artist deleted successfully.", error: null });
+          return res.status(200).json({ status: 200, data: {artist_id: result._id}, message: `Artist: ${result.name}  deleted successfully.`, error: null });
         })
         .catch((err) => {
           console.log(err);
