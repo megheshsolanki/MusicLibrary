@@ -5,8 +5,8 @@ const Artist = require("../models/artist");
 exports.getAlbums = (req, res, next) => {
   const adminId = req.query.admin_id; // replace or fetch from token
   const hidden = req.query.hidden;
-  const limit = req.query.limit || 5;
-  const offset = req.query.offset || 0;
+  const limit = parseInt(req.query.limit) || 5;
+  const offset = parseInt(req.query.offset) || 0;
   const artistId = req.query.artist_id;
 
   const filters = {
