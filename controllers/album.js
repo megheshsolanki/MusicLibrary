@@ -155,7 +155,7 @@ exports.deleteAlbum = (req, res, next) => {
       }
       Album.findByIdAndDelete(albumId)
         .then((album) => {
-          return res.status(204).json({ status: 200, data: null, message: "Album deleted successfully.", error: null });
+          return res.status(200).json({ status: 200, data: {album_id: album._id}, message: `Album: ${album.name} deleted successfully.`, error: null });
         })
         .catch((err) => {
           console.log(err);
