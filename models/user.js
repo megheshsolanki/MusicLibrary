@@ -23,6 +23,6 @@ const userSchema = new Schema({
             return this.role != "admin"
         }
     }
-});
+},{timestamps : {createdAt: true, updatedAt: false}});
 
 module.exports = mongoose.model("User", userSchema);

@@ -3,17 +3,17 @@ const Album = require("../models/album");
 const Artist = require("../models/artist");
 
 exports.getAlbums = (req, res, next) => {
-  const adminId = req.admin_id; 
+  const adminId = req.admin_id;
   const hidden = req.query.hidden;
   const limit = parseInt(req.query.limit) || 5;
   const offset = parseInt(req.query.offset) || 0;
   const artistId = req.query.artist_id;
 
   const filters = {
-    admin_id: adminId
+    admin_id: adminId,
   };
-  if(hidden){
-    filters.hidden = hidden
+  if (hidden) {
+    filters.hidden = hidden;
   }
   if (artistId) {
     Artist.findById(artistId)
@@ -34,9 +34,19 @@ exports.getAlbums = (req, res, next) => {
   Album.find(filters)
     .limit(limit)
     .skip(offset)
+    .populate({
+      path: "artist_id",
+      select: "name",
+    })
     .then((albums) => {
-
-      return res.status(200).json({ status: 200, data: albums, message: "Albums retrieved successfully.", error: null });
+      const formattedAlbums = albums.map((album) => ({
+        album_id: album._id,
+        name: album.name,
+        year: album.year,
+        artist_name: album.artist_id.name,
+        hidden: album.hidden,
+      }));
+      return res.status(200).json({ status: 200, data: formattedAlbums, message: "Albums retrieved successfully.", error: null });
     })
     .catch((err) => {
       console.log(err);
@@ -48,6 +58,10 @@ exports.getAlbum = (req, res, next) => {
   const albumId = req.params.id;
 
   Album.findById(albumId)
+    .populate({
+      path: "artist_id",
+      select: "name",
+    })
     .then((album) => {
       if (!album) {
         return res.status(404).json({ status: 404, data: null, message: "Album not found.", error: null });
@@ -55,7 +69,14 @@ exports.getAlbum = (req, res, next) => {
       if (adminId !== album.admin_id.toString()) {
         return res.status(403).json({ status: 403, data: null, message: "Forbidden Access /Operation not allowed.", error: null });
       }
-      return res.status(200).json({ status: 200, data: album, message: "Album retrieved successfully.", error: null });
+      const formattedAlbum = {
+        album_id: album._id,
+        name: album.name,
+        year: album.year,
+        artist_name: album.artist_id.name,
+        hidden: album.hidden,
+      };
+      return res.status(200).json({ status: 200, data: formattedAlbum, message: "Album retrieved successfully.", error: null });
     })
     .catch((err) => {
       console.log(err);
@@ -63,8 +84,8 @@ exports.getAlbum = (req, res, next) => {
 };
 
 exports.addAlbum = (req, res, next) => {
-  const adminId = req.admin_id; 
-  
+  const adminId = req.admin_id;
+
   const artistId = req.body.artist_id;
   const name = req.body.name;
   const year = parseInt(req.body.year);
@@ -110,7 +131,7 @@ exports.addAlbum = (req, res, next) => {
 };
 
 exports.updateAlbum = (req, res, next) => {
-  const adminId = req.admin_id; 
+  const adminId = req.admin_id;
 
   const albumId = req.params.id;
   const name = req.body.name;
@@ -139,8 +160,8 @@ exports.updateAlbum = (req, res, next) => {
 };
 
 exports.deleteAlbum = (req, res, next) => {
-  const adminId = req.admin_id; 
-  
+  const adminId = req.admin_id;
+
   const albumId = req.params.id;
 
   Album.findById(albumId)
@@ -153,7 +174,7 @@ exports.deleteAlbum = (req, res, next) => {
       }
       Album.findByIdAndDelete(albumId)
         .then((album) => {
-          return res.status(200).json({ status: 200, data: {album_id: album._id}, message: `Album: ${album.name} deleted successfully.`, error: null });
+          return res.status(200).json({ status: 200, data: { album_id: album._id }, message: `Album: ${album.name} deleted successfully.`, error: null });
         })
         .catch((err) => {
           console.log(err);

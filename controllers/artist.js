@@ -21,7 +21,13 @@ exports.getArtists = (req, res, next) => {
     .limit(limit)
     .skip(offset)
     .then((artists) => {
-      return res.status(200).json({ status: 200, data: artists, message: "Artists retrieved successfully.", error: null });
+      const formattedArtists = artists.map((artist)=>({
+        artist_id: artist._id,
+        name: artist.name,
+        grammy: artist.grammy,
+        hidden: artist.hidden
+      }));
+      return res.status(200).json({ status: 200, data: formattedArtists, message: "Artists retrieved successfully.", error: null });
     })
     .catch((err) => {
       console.log(err);
@@ -74,7 +80,13 @@ exports.getArtist = (req, res, next) => {
       if (adminId !== artist.admin_id.toString()) {
         return res.status(403).json({ status: 403, data: null, message: "Forbidden Access /Operation not allowed.", error: null });
       }
-      return res.status(200).json({ status: 200, data: artist, message: "Artist retrieved successfully.", error: null });
+      const formattedArtist = {
+        artist_id: artist._id,
+        name: artist.name,
+        grammy: artist.grammy,
+        hidden: artist.hidden
+      };
+      return res.status(200).json({ status: 200, data: formattedArtist, message: "Artist retrieved successfully.", error: null });
     })
     .catch((err) => {
       console.log(err);

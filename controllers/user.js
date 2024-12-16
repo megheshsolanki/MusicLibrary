@@ -74,7 +74,13 @@ exports.getUsers = (req, res, next) => {
     .limit(limit)
     .skip(offset)
     .then((users) => {
-      return res.status(200).json({ status: 200, data: users, message: "Users retrieved successfully.", error: null });
+      const formattedUser = users.map((user)=>({
+        user_id: user._id,
+        email: user.email,
+        role: user.role,
+        cretedAt: user.createdAt
+      }))
+      return res.status(200).json({ status: 200, data: formattedUser, message: "Users retrieved successfully.", error: null });
     })
     .catch((err) => {
       console.log(err);
