@@ -81,3 +81,7 @@ exports.login = (req, res, next) => {
         next(err);
       });
   };
+
+exports.logout = (req,res,next) => {
+  res.status(200).json({status: 200, data: null, message: "User logged out successfully.", error: null});
+}
