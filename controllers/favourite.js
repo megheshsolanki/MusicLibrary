@@ -5,7 +5,7 @@ const Album = require("../models/album");
 const Track = require("../models/track");
 
 exports.getFavourites = (req, res, next) => {
-  const userId = req.query.user_id; // fetched from token
+  const userId = req.user_id; 
 
   const category = req.params.category;
   const limit = parseInt(req.query.limit) || 5;
@@ -34,8 +34,8 @@ exports.getFavourites = (req, res, next) => {
 };
 
 exports.addFavourite = (req, res, next) => {
-  const userId = req.query.user_id; // fetched from token
-  const adminId = req.query.admin_id; // fetched from token
+  const userId = req.user_id; 
+  const adminId = req.admin_id; 
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -103,7 +103,7 @@ exports.addFavourite = (req, res, next) => {
 };
 
 exports.deleteFavourite = (req, res, next) => {
-  const userId = req.query.user_id; // fetch from token
+  const userId = req.user_id; 
 
   const favouriteId = req.params.id;
 

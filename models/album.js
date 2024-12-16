@@ -22,7 +22,7 @@ const albumSchema = Schema({
   },
   artist_id: {
     type: Schema.Types.ObjectId,
-    ref: "Artist",
+    ref: "artist",
     required: true,
   },
 });

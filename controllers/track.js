@@ -4,7 +4,7 @@ const Artist = require("../models/artist");
 const Album = require("../models/album");
 
 exports.getTracks = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch from token
+  const adminId = req.admin_id; 
 
   const limit = parseInt(req.query.limit) || 5;
   const offset = parseInt(req.query.offset) || 0;
@@ -75,7 +75,7 @@ exports.getTracks = (req, res, next) => {
 };
 
 exports.getTrack = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch from token
+  const adminId = req.admin_id; 
 
   const trackId = req.params.id;
 
@@ -112,8 +112,7 @@ exports.getTrack = (req, res, next) => {
 };
 
 exports.addTrack = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch from token
-  // role check
+  const adminId = req.admin_id; 
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -174,8 +173,7 @@ exports.addTrack = (req, res, next) => {
 };
 
 exports.updateTrack = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch from token
-  // role-check
+  const adminId = req.admin_id; 
 
   const trackId = req.params.id;
   const name = req.body.name;
@@ -204,8 +202,8 @@ exports.updateTrack = (req, res, next) => {
 };
 
 exports.deleteTrack = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch from token
-  // role-check
+  const adminId = req.admin_id; 
+  
   const trackId = req.params.id;
 
   Track.findById(trackId)

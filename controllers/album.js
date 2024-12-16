@@ -3,7 +3,7 @@ const Album = require("../models/album");
 const Artist = require("../models/artist");
 
 exports.getAlbums = (req, res, next) => {
-  const adminId = req.query.admin_id; // replace or fetch from token
+  const adminId = req.admin_id; 
   const hidden = req.query.hidden;
   const limit = parseInt(req.query.limit) || 5;
   const offset = parseInt(req.query.offset) || 0;
@@ -44,7 +44,7 @@ exports.getAlbums = (req, res, next) => {
 };
 
 exports.getAlbum = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch from token
+  const adminId = req.admin_id;
   const albumId = req.params.id;
 
   Album.findById(albumId)
@@ -63,8 +63,8 @@ exports.getAlbum = (req, res, next) => {
 };
 
 exports.addAlbum = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch from token
-  //role check
+  const adminId = req.admin_id; 
+  
   const artistId = req.body.artist_id;
   const name = req.body.name;
   const year = parseInt(req.body.year);
@@ -110,8 +110,7 @@ exports.addAlbum = (req, res, next) => {
 };
 
 exports.updateAlbum = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch from token
-  // role-check
+  const adminId = req.admin_id; 
 
   const albumId = req.params.id;
   const name = req.body.name;
@@ -140,9 +139,8 @@ exports.updateAlbum = (req, res, next) => {
 };
 
 exports.deleteAlbum = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch from token
-  // role-check
-
+  const adminId = req.admin_id; 
+  
   const albumId = req.params.id;
 
   Album.findById(albumId)

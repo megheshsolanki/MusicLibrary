@@ -2,7 +2,7 @@ const { validationResult } = require("express-validator");
 const Artist = require("../models/artist");
 
 exports.getArtists = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch admin id from token
+  const adminId = req.admin_id; 
   const grammy = parseInt(req.query.grammy) ;
   const hidden = req.query.hidden;
   const limit = parseInt(req.query.limit) || 5;
@@ -39,8 +39,8 @@ exports.addArtist = (req, res, next) => {
     return res.status(400).json({ status: 400, data: null, message: `Bad Request, Reason: ${reason} `, error: null });
   }
 
-  const adminId = req.query.admin_id; // fetch admin id from token
-  // role-check
+  const adminId = req.admin_id; 
+
   const name = req.body.name;
   const grammy = req.body.grammy;
   const hidden = req.body.hidden;
@@ -63,7 +63,7 @@ exports.addArtist = (req, res, next) => {
 };
 
 exports.getArtist = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch admin id from token
+  const adminId = req.admin_id; 
   const artistId = req.params.id;
 
   Artist.findById(artistId)
@@ -82,13 +82,13 @@ exports.getArtist = (req, res, next) => {
 };
 
 exports.updateArtist = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch admin id from token
+  const adminId = req.admin_id; 
   const artistId = req.params.id;
   const name = req.body.name;
   const grammy = req.body.grammy;
   const hidden = req.body.hidden;
 
-  // role check
+  
   Artist.findById(artistId)
     .then((artist) => {
       if (!artist) {
@@ -112,9 +112,9 @@ exports.updateArtist = (req, res, next) => {
 };
 
 exports.deleteArtist = (req, res, next) => {
-  const adminId = req.query.admin_id; // fetch admin id from token
+  const adminId = req.admin_id; 
   const artistId = req.params.id;
-  // role check
+
 
   Artist.findById(artistId)
     .then((artist) => {

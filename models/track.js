@@ -22,12 +22,12 @@ const trackSchema = new Schema({
     },
     artist_id:{
         type: Schema.Types.ObjectId,
-        ref: 'Artist',
+        ref: 'artist',
         required: true
     },
     album_id:{
         type: Schema.Types.ObjectId,
-        ref: 'Album',
+        ref: 'album',
         required: true
     }
 });

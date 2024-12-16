@@ -1,17 +1,18 @@
 const express = require("express");
-
-const userController = require("../controllers/user");
-
 const { body } = require("express-validator");
+const User = require("../models/user");
+const userController = require("../controllers/user");
+const isAuthenticated = require("../middlewares/isAuthenticated");
+const isAdmin = require("../middlewares/isAdmin");
 
 const router = express.Router();
 
-const User = require("../models/user");
-
-router.get('/users',userController.getUsers);
+router.get("/users", isAuthenticated, isAdmin, userController.getUsers);
 
 router.post(
   "/users/add-user",
+  isAuthenticated,
+  isAdmin,
   [
     body("email")
       .custom((value, { req }) => {
@@ -20,7 +21,9 @@ router.post(
             return Promise.reject("E-mail already exists.");
           }
         });
-      }).notEmpty().withMessage("Email is missing")
+      })
+      .notEmpty()
+      .withMessage("Email is missing")
       .normalizeEmail(),
     body("password").notEmpty().withMessage("Password is missing"),
     body("role").notEmpty().withMessage("Role is missing"),
@@ -28,8 +31,8 @@ router.post(
   userController.addUser
 );
 
-router.delete('/users/:user_id',userController.deleteUser);
+router.delete("/users/:user_id", isAuthenticated, isAdmin, userController.deleteUser);
 
-router.put('/users/update-password', userController.updatePassword);
+router.put("/users/update-password", isAuthenticated, userController.updatePassword);
 
 module.exports = router;

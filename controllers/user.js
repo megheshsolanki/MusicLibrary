@@ -21,8 +21,8 @@ exports.addUser = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const role = req.body.role;
-  const admin_id = req.body.admin_id; // replace with current user id (logged in user)
-  // role check for current user to be added
+  const admin_id = req.admin_id; 
+  
 
   if (role == "admin") {
     return res.status(403).json({ status: 403, data: null, message: "Forbidden Access /Operation not allowed.", error: null });
@@ -53,8 +53,8 @@ exports.addUser = (req, res, next) => {
 };
 
 exports.getUsers = (req, res, next) => {
-  const adminId = req.query.admin_id; // replace with current user id (logged in user)
-  // role check
+  const adminId = req.admin_id; 
+  
   const limit = parseInt(req.query.limit) || 5;
   const offset = parseInt(req.query.offset) || 0;
   const role = req.query.role;
@@ -82,8 +82,8 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.deleteUser = (req, res, next) => {
-  const adminId = req.query.admin_id; // replace with current user id (logged in user)
-  // role check
+  const adminId = req.admin_id; 
+  
   const userId = req.params.user_id;
 
   User.findById(userId)
@@ -109,7 +109,7 @@ exports.deleteUser = (req, res, next) => {
 };
 
 exports.updatePassword = (req, res, next) => {
-  const userId = req.query.user_id; // replace with current user id (logged in user)
+  const userId = req.user_id; 
   
   const oldPassword = req.body.old_password;
   const newPassword = req.body.new_password;
