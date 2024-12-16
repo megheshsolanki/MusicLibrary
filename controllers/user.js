@@ -48,7 +48,10 @@ exports.addUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -83,7 +86,10 @@ exports.getUsers = (req, res, next) => {
       return res.status(200).json({ status: 200, data: formattedUser, message: "Users retrieved successfully.", error: null });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -105,12 +111,19 @@ exports.deleteUser = (req, res, next) => {
             return res.status(200).json({ status: 200, data: null, message: "User deleted successfully.", error: null });
           })
           .catch((err) => {
-            console.log(err);
+            if (!err.statusCode) {
+              err.statusCode = 400;
+              err.message = "Bad request."
+            }
+            next(err);
           });
       }
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -140,18 +153,28 @@ exports.updatePassword = (req, res, next) => {
                   return res.status(204).json({});
                 })
                 .catch((err) => {
-                  console.log(err);
+                  if (!err.statusCode) {
+                    err.statusCode = 400;
+                    err.message = "Bad request."
+                  }
+                  next(err);
                 });
               })
               .catch((err) => {
-                console.log(err);
+                if (!err.statusCode) {
+                  err.statusCode = 500;
+                }
+                next(err);
               });
             } else {
           return res.status(403).json({});
         }
       })
       .catch((err) => {
-        console.log(err);
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
       });
   });
 };

@@ -28,7 +28,11 @@ exports.getTracks = (req, res, next) => {
         filters.album_id = albumId;
       })
       .catch((err) => {
-        console.log(err);
+        if (!err.statusCode) {
+          err.statusCode = 400;
+          err.message = "Bad request."
+        }
+        next(err);
       });
   }
   if (artistId) {
@@ -43,7 +47,11 @@ exports.getTracks = (req, res, next) => {
         filters.artist_id = artistId;
       })
       .catch((err) => {
-        console.log(err);
+        if (!err.statusCode) {
+          err.statusCode = 400;
+          err.message = "Bad request."
+        }
+        next(err);
       });
   }
   Track.find(filters)
@@ -70,7 +78,10 @@ exports.getTracks = (req, res, next) => {
       return res.status(200).json({ status: 200, data: formattedTracks, message: "Tracks retrieved successfully.", error: null });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -107,7 +118,10 @@ exports.getTrack = (req, res, next) => {
       return res.status(200).json({ status: 200, data: formattedTrack, message: "Track retrieved successfully.", error: null });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -160,15 +174,26 @@ exports.addTrack = (req, res, next) => {
               return res.status(201).json({ status: 201, data: null, message: "Track created successfully.", error: null });
             })
             .catch((err) => {
-              console.log(err);
+              if (!err.statusCode) {
+                err.statusCode = 400;
+                err.message = "Bad request."
+              }
+              next(err);
             });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 400;
+            err.message = "Bad request."
+          }
+          next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -193,11 +218,18 @@ exports.updateTrack = (req, res, next) => {
           return res.status(204).json({ status: 204, data: null, message: "Track updated successfully.", error: null });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 400;
+            err.message = "Bad request."
+          }
+          next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -219,10 +251,17 @@ exports.deleteTrack = (req, res, next) => {
           return res.status(200).json({ status: 200, data: { track_id: result._id }, message: `Track: ${result.name} deleted successfully.`, error: null });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 400;
+            err.message = "Bad request."
+          }
+          next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };

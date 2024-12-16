@@ -29,7 +29,10 @@ exports.getFavourites = (req, res, next) => {
       return res.status(200).json({ status: 200, data: formattedFavourites, message: "Favourites retrieved successfully.", error: null });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -91,14 +94,25 @@ exports.addFavourite = (req, res, next) => {
               return res.status(201).json({ status: 201, data: null, message: "Favourite added successfully.", error: null });
             })
             .catch((err) => {
-              console.log(err);
+              if (!err.statusCode) {
+                err.statusCode = 400;
+                err.message = "Bad request."
+              }
+              next(err);
             });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
         });
       }).catch(err=>{
-        console.log(err);
+        if (!err.statusCode) {
+          err.statusCode = 400;
+          err.message = "Bad request."
+        }
+        next(err);
       })
 };
 
@@ -120,10 +134,17 @@ exports.deleteFavourite = (req, res, next) => {
           return res.status(200).json({ status: 200, data: null, message: "Favourite removed successfully.", error: null });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 400;
+        err.message = "Bad request."
+      }
+      next(err);
     });
 };

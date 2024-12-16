@@ -1,8 +1,11 @@
 const express = require('express')
 const mongoose = require('mongoose');
+const cors = requrie('cors');
 require('dotenv').config()
 
 const app = express();
+
+app.use(cors());
 
 const authRoutes = require('./routes/authentication');
 const userRoutes = require('./routes/user')
@@ -27,12 +30,22 @@ app.use('/', (req,res,next) => {
     res.send({message: "Server is running"});
 })
 
+app.use((error, req, res, next) => {
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data;
+  res.status(status).json({status: status,data: data, message: null, error: message });
+});
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then((result) => {
-    app.listen(8000);
+    app.listen(process.env.PORT);
     console.log("Connected");
   })
   .catch((err) => {
-    console.log(err);
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   });

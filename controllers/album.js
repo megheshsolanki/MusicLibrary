@@ -27,7 +27,11 @@ exports.getAlbums = (req, res, next) => {
         filters.artist_id = artistId;
       })
       .catch((err) => {
-        console.log(err);
+        if (!err.statusCode) {
+          err.statusCode = 400;
+          err.message = "Bad request."
+        }
+        next(err);
       });
   }
 
@@ -49,7 +53,11 @@ exports.getAlbums = (req, res, next) => {
       return res.status(200).json({ status: 200, data: formattedAlbums, message: "Albums retrieved successfully.", error: null });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 400;
+        err.message = "Bad request."
+      }
+      next(err);
     });
 };
 
@@ -79,7 +87,11 @@ exports.getAlbum = (req, res, next) => {
       return res.status(200).json({ status: 200, data: formattedAlbum, message: "Album retrieved successfully.", error: null });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 400;
+        err.message = "Bad request."
+      }
+      next(err);
     });
 };
 
@@ -122,11 +134,18 @@ exports.addAlbum = (req, res, next) => {
           return res.status(201).json({ status: 201, data: null, message: "Album created successfully.", error: null });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 400;
+        err.message = "Bad request."
+      }
+      next(err);
     });
 };
 
@@ -151,11 +170,18 @@ exports.updateAlbum = (req, res, next) => {
           return res.status(204).json({ status: 204, data: null, message: "Album updated successfully.", error: null });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 400;
+        err.message = "Bad request."
+      }
+      next(err);
     });
 };
 
@@ -177,10 +203,17 @@ exports.deleteAlbum = (req, res, next) => {
           return res.status(200).json({ status: 200, data: { album_id: album._id }, message: `Album: ${album.name} deleted successfully.`, error: null });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 400;
+        err.message = "Bad request."
+      }
+      next(err);
     });
 };

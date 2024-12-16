@@ -30,7 +30,11 @@ exports.getArtists = (req, res, next) => {
       return res.status(200).json({ status: 200, data: formattedArtists, message: "Artists retrieved successfully.", error: null });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 400;
+        err.message = "Bad request."
+      }
+      next(err);
     });
 };
 
@@ -64,7 +68,10 @@ exports.addArtist = (req, res, next) => {
       return res.status(201).json({ status: 201, data: null, message: "Artists created successfully.", error: null });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -89,7 +96,10 @@ exports.getArtist = (req, res, next) => {
       return res.status(200).json({ status: 200, data: formattedArtist, message: "Artist retrieved successfully.", error: null });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -115,11 +125,18 @@ exports.updateArtist = (req, res, next) => {
           return res.status(204).json({ status: 204, data: null, message: "Artist updated successfully.", error: null });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+      err.statusCode = 400;
+      err.message = "Bad request."
+    }
+    next(err);
     });
 };
 
@@ -141,10 +158,17 @@ exports.deleteArtist = (req, res, next) => {
           return res.status(200).json({ status: 200, data: {artist_id: result._id}, message: `Artist: ${result.name}  deleted successfully.`, error: null });
         })
         .catch((err) => {
-          console.log(err);
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 400;
+        err.message = "Bad request."
+      }
+      next(err);
     });
 };
